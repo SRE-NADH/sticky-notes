@@ -1,21 +1,29 @@
 import { act } from "@testing-library/react";
 import { ADD,DELETE,UPDATE,SWAP,RESET } from "../actions/actionTypes";
 
+let initialState = [];
+if(localStorage.getItem('arr')){
+   initialState = JSON.parse(localStorage.getItem('arr'));
+}
 
-const initialState = [];
 
 
 const todoReducer = (state=initialState,actions)=>{
  
     switch(actions.type){
         case ADD : {
-            return [...state,actions.value];
+            let arr =  [...state,actions.value];
+            localStorage.setItem('arr',JSON.stringify(arr));
+            return arr;
         }
 
         case DELETE : {
-            return state.filter((item)=>{
+            let arr = state.filter((item)=>{
               return item.id!=actions.value.id;
             })
+            
+            localStorage.setItem('arr',JSON.stringify(arr));
+            return arr;
         }
 
         case UPDATE: {
@@ -29,6 +37,8 @@ const todoReducer = (state=initialState,actions)=>{
             }
         let arr = structuredClone(state);
         arr[index] = actions.value;
+        
+        localStorage.setItem('arr',JSON.stringify(arr));
         return arr;
         }
     case SWAP :{
@@ -36,6 +46,7 @@ const todoReducer = (state=initialState,actions)=>{
         let tmp = arr[actions.index_1];
         arr[actions.index_1]=arr[actions.index_2];
         arr[actions.index_2]=tmp;
+        localStorage.setItem('arr',JSON.stringify(arr));
         return arr;
     }
     case RESET :{
